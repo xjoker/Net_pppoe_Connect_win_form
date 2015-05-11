@@ -20,6 +20,7 @@ namespace PPPOE_CYJH
         public Form1()
         {
             InitializeComponent();
+            Control.CheckForIllegalCrossThreadCalls = false;
         }
 
 
@@ -38,7 +39,17 @@ namespace PPPOE_CYJH
 
         private void button1_Click(object sender, EventArgs e)
         {
-            
+
+            Thread th = new Thread(gogo);
+            th.IsBackground = true;
+            th.Start();
+        }
+
+
+        //...主线程
+        private void gogo()
+        {
+
             if (button1.Text != "断开")
             {
                 try
@@ -47,17 +58,14 @@ namespace PPPOE_CYJH
 
                     string pppoe_id = "ctcc";//默认电信线路的账号
                     string pppoe_pw = "123";
-                    if (lt_Radio.Checked==true)
+                    if (lt_Radio.Checked == true)
                     {
                         pppoe_id = "cucc";
                     }
-                    //使用匿名委托传递多个参数
-                    Thread th = new Thread(delegate() { pppoe.pppoe_on(pppoe_id, pppoe_pw); });
-                    th.IsBackground = true;
-                    Console.WriteLine("--------Link-------start----------");
-                    th.Start();
 
-                    Thread.Sleep(300);
+                     pppoe.pppoe_on(pppoe_id, pppoe_pw);
+
+                    Thread.Sleep(500);
                     NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();//获取本机所有网卡对象
 
                     foreach (NetworkInterface adapter in adapters)
@@ -101,7 +109,6 @@ namespace PPPOE_CYJH
                 button1.Enabled = false;
                 button1.Text = "连接";
                 pppoe.pppoe_off();
-                Thread.Sleep(1000);
                 GetIP();
                 Label_Zhuangtai.Text = "未连接";
                 button1.Enabled = true;
@@ -110,9 +117,7 @@ namespace PPPOE_CYJH
                 Label_Bendi.Text = "0.0.0.0.";
             }
    
-
         }
-
 
         private void GetIP()
         {
