@@ -107,14 +107,14 @@ namespace PPPOE_CYJH
             else
             {
                 button1.Enabled = false;
-                button1.Text = "连接";
                 pppoe.pppoe_off();
                 GetIP();
                 Label_Zhuangtai.Text = "未连接";
                 button1.Enabled = true;
                 dx_Radio.Enabled = true;
                 lt_Radio.Enabled = true;
-                Label_Bendi.Text = "0.0.0.0.";
+                Label_Bendi.Text = "0.0.0.0";
+                button1.Text = "连接";
             }
    
         }
@@ -127,7 +127,9 @@ namespace PPPOE_CYJH
 
         private void button2_Click(object sender, EventArgs e)
         {
-            GetIP();
+            Thread get = new Thread(GetIP);
+            get.IsBackground = true;
+            get.Start();
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
